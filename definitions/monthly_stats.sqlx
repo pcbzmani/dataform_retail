@@ -1,0 +1,20 @@
+config {
+    type : 'view',
+    dependencies : ["fin_retail_fin_orders_assertions_rowConditions"]
+}
+
+with order_st as (
+select 
+    *
+    from ${ref('fin_orders')}
+    pivot (sum(amount) for order_status in ('SUSPECTED_FRAUD', 'CLOSED', 'ON_HOLD', 'COMPLETE', 'CANCELED' ))
+)
+select 
+    FORMAT_DATE( '%Y-%m', date(order_date)) as year_month
+    ,sum(COMPLETE) as COMPLETE_AMOUNT
+    ,count(COMPLETE) as ORDERS_COMPLETED
+    ,sum(CANCELED) as CANCELED_AMOUNT
+    ,count(CANCELED) as ORDERS_CANCELED
+ from order_st
+ group by 1
+ order by 1

@@ -1,0 +1,5 @@
+defaultProject: seventh-coast-438617-g6
+defaultLocation: me-central1
+defaultDataset: fin_retail
+defaultAssertionDataset: fin_retail_assertion
+dataformCoreVersion: 3.0.0

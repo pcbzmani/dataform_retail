@@ -1,0 +1,34 @@
+config {
+    type: 'incremental',
+    uniqueKey: ['order_id'],
+    database: `seventh-coast-438617-g6`,
+    schema: `fin_retail`,
+    name: 'fin_orders',
+    columns: {
+        order_id: varconst.order_id,
+        order_date: varconst.order_date,
+        amount: varconst.amount
+    },
+    assertions: {
+        uniqueKey: ['order_id'],
+        rowConditions: [
+            'amount > 0'
+        ]
+    }
+}
+
+pre_operations {
+  LOAD DATA OVERWRITE
+    fin_retail.orders_stg
+  FROM FILES ( format = 'CSV',
+      uris = ['${varconst.gs_bucket}/retail_db/orders_monthly/orders_${varconst.yyyy}_${varconst.mm}.csv']
+      )
+}
+
+SELECT
+  cast(order_id as int) as order_id,
+  DATE(order_date) AS order_date,
+  cast(amount as int) as amount,
+  order_status
+FROM
+  fin_retail.orders_stg
