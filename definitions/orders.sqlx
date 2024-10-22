@@ -2,8 +2,8 @@ config {
     type: 'incremental',
     uniqueKey: ['order_id'],
     database: `seventh-coast-438617-g6`,
-    schema: `fin_retail`,
-    name: 'fin_orders',
+    schema: `${varconst.schema}_fin_retail`,
+    name: `${varconst.tablePrefix}fin_orders`,
     columns: {
         order_id: varconst.order_id,
         order_date: varconst.order_date,
@@ -19,7 +19,7 @@ config {
 
 pre_operations {
   LOAD DATA OVERWRITE
-    fin_retail.orders_stg
+    `${varconst.schema}_fin_retail`.`${varconst.tablePrefix}orders_stg`
   FROM FILES ( format = 'CSV',
       uris = ['${varconst.gs_bucket}/retail_db/orders_monthly/orders_${varconst.yyyy}_${varconst.mm}.csv']
       )
@@ -31,4 +31,4 @@ SELECT
   cast(amount as int) as amount,
   order_status
 FROM
-  fin_retail.orders_stg
+  `${varconst.schema}_fin_retail`.`${varconst.tablePrefix}orders_stg`

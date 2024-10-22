@@ -1,20 +1,30 @@
 config {
-    type : 'view',
-    dependencies : ["fin_retail_fin_orders_assertions_rowConditions"]
+    type: 'view',
+    schema: `${varconst.schema}_fin_retail`,
+    dependencies: ["uat_fin_retail_uat_fin_orders_assertions_rowConditions"]
 }
 
-with order_st as (
-select 
+WITH
+  order_st AS (
+  SELECT
     *
-    from ${ref('fin_orders')}
-    pivot (sum(amount) for order_status in ('SUSPECTED_FRAUD', 'CLOSED', 'ON_HOLD', 'COMPLETE', 'CANCELED' ))
-)
-select 
-    FORMAT_DATE( '%Y-%m', date(order_date)) as year_month
-    ,sum(COMPLETE) as COMPLETE_AMOUNT
-    ,count(COMPLETE) as ORDERS_COMPLETED
-    ,sum(CANCELED) as CANCELED_AMOUNT
-    ,count(CANCELED) as ORDERS_CANCELED
- from order_st
- group by 1
- order by 1
+  FROM
+    ${ref(`${varconst.tablePrefix}fin_orders`)}
+  PIVOT
+    (SUM(amount) FOR order_status IN ('SUSPECTED_FRAUD',
+        'CLOSED',
+        'ON_HOLD',
+        'COMPLETE',
+        'CANCELED' )) )
+SELECT
+  FORMAT_DATE( '%Y-%m', DATE(order_date)) AS year_month,
+  SUM(COMPLETE) AS COMPLETE_AMOUNT,
+  COUNT(COMPLETE) AS ORDERS_COMPLETED,
+  SUM(CANCELED) AS CANCELED_AMOUNT,
+  COUNT(CANCELED) AS ORDERS_CANCELED
+FROM
+  order_st
+GROUP BY
+  1
+ORDER BY
+  1

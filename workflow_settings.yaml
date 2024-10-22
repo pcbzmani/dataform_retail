@@ -3,3 +3,7 @@ defaultLocation: me-central1
 defaultDataset: fin_retail
 defaultAssertionDataset: fin_retail_assertion
 dataformCoreVersion: 3.0.0
+vars: {
+    env: "uat",
+    table_prefix: "uat_"
+}
