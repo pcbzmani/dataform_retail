@@ -1,7 +1,7 @@
 config {
     type: 'view',
     schema: `${varconst.schema}_fin_retail`,
-    dependencies: ["uat_fin_retail_uat_fin_orders_assertions_rowConditions"]
+    dependencies: [`${varconst.schema}_fin_retail_${varconst.schema}_fin_orders_assertions_rowConditions`]
 }
 
 WITH
